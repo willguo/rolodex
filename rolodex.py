@@ -11,9 +11,9 @@ def encapsulate(first_name_match, last_name_match, name_match, color_match, zip_
 		if name_match:
 			name = name_match.group("elem")
 			name_array = name.rsplit(" ", 1)
+			# Add to error list if full name is less than 2 words.
 			if len(name_array) < 2:
-				# Add to error list.
-				error_list.append(linecount)
+				return False
 			first_name = name_array[0]
 			last_name = name_array[1]
 		else:
@@ -27,15 +27,13 @@ def encapsulate(first_name_match, last_name_match, name_match, color_match, zip_
 		phone = re.sub(" ", "-", (phone_match.group("elem")))
 		phone = re.sub("\(", "", phone)
 		phone = re.sub("\)", "", phone)
-
-		# return True
 		return [color, first_name, last_name, phone, zipcode]
 	else:
 		return False
 
-def normalize():
+def normalize(input_file):
 	# Open up the file to be read.
-	datafile = open('data.in', 'r')
+	datafile = open(str(input_file), 'r')
 
 	# Dictionary to keep track of parsed data.
 	dictionary = {}
@@ -83,11 +81,6 @@ def normalize():
 				dictionary[lastname + firstname] = collections.OrderedDict([('color', color), ('firstname', firstname), \
 					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
 
-				# dictionary[success[2] + success[1]] = collections.OrderedDict([('color', success[0]), ('firstname', success[1]), \
-				# 	('lastname', success[2]), ('phonenumber', success[3]), ('zipcode', success[4])])
-				# dictionary[last_name + first_name] = {'color': color, 'firstname': first_name, 'lastname': last_name, \
-				# 	'phonenumber': phone, 'zipcode': zipcode}
-
 			else:
 				error_list.append(linecount)
 
@@ -132,24 +125,28 @@ def normalize():
 				error_list.append(linecount)
 
 		else:
-			# Add to line to error array (number of arguments do not match).
+			# Add to line to errors list (number of arguments do not match).
 			error_list.append(linecount)
 
 		linecount += 1
 	
-	# Sort entries alphabetically and display in JSON object.
+	# Sort entries alphabetically and append to entries list.
 	for key in sorted(dictionary):
 		entries_list.append(dictionary[key])
 
-	# response = {'entries': entries_list, 'errors': error_list}
-	response = collections.OrderedDict([('entries', entries_list), ('errors', error_list)])
+	# Generate JSON data in dictionary format.
+	response = {'entries': entries_list, 'errors': error_list}
 	
+	# Write JSON data to file, result.out.
 	with open('result.out', 'w') as outfile:
-		json.dump(response, outfile, indent = 2)
+		json.dump(response, outfile, sort_keys = True, indent = 2)
 
-	# print json.dumps(entries_list)
-	# print json.dumps(error_list)
+	# TO TEST:
+	# - SAME LAST NAME, DIFFERENT FIRST NAMES
+	# - INVALID INPUTS VS VALID INPUTS
+	# - FORMATTING OF OUTPUT IS CORRECT -> diff?
+	# - FORMAT OF ELEMENTS ARE CORRECT: color, firstname, etc...
+	# ASSERT -> JSON to Python List/Dict -> Dict Element.... errors present?
+	# *** UNICODE PROPERTIES ARE NOT SUPPORTED IN PYTHON WITHOUT USE OF EXTERNAL LIBRARIES. ***
 
-	# UNICODE PROPERTIES ARE NOT SUPPORTED IN PYTHON WITHOUT USE OF EXTERNAL LIBRARIES.
-	
 	return
