@@ -1,5 +1,6 @@
 import re
 import json
+import collections
 
 def encapsulate(first_name_match, last_name_match, name_match, color_match, zip_match, phone_match):
 	if first_name_match and last_name_match and color_match and zip_match and phone_match \
@@ -12,7 +13,7 @@ def encapsulate(first_name_match, last_name_match, name_match, color_match, zip_
 			name_array = name.rsplit(" ", 1)
 			if len(name_array) < 2:
 				# Add to error list.
-				error_list.append(str(linecount))
+				error_list.append(linecount)
 			first_name = name_array[0]
 			last_name = name_array[1]
 		else:
@@ -26,10 +27,9 @@ def encapsulate(first_name_match, last_name_match, name_match, color_match, zip_
 		phone = re.sub(" ", "-", (phone_match.group("elem")))
 		phone = re.sub("\(", "", phone)
 		phone = re.sub("\)", "", phone)
-		# Replace the following.
-		print (first_name + " " + last_name + " " + zipcode + " " + color + " " + phone)
-		return [first_name, last_name, color, zipcode, phone]
+
 		# return True
+		return [color, first_name, last_name, phone, zipcode]
 	else:
 		return False
 
@@ -37,6 +37,10 @@ def normalize():
 	# Open up the file to be read.
 	datafile = open('practice.in', 'r')
 
+	# Dictionary to keep track of parsed data.
+	dictionary = {}
+	# List to keep track of JSON data.
+	entries_list = []
 	# Error list to keep track of errors found in the input data.
 	error_list = []
 
@@ -62,26 +66,37 @@ def normalize():
 		line_components = line.split(", ")
 		if len(line_components) == 4:
 			# Check format number 2.
-			print ("4 COMPONENTS")
-			# print (line_components[2])
+			# print ("4 COMPONENTS")
 			name_match = pattern1.match(line_components[0])
 			color_match = pattern3.match(line_components[1])
 			zip_match = pattern4.match(line_components[2])
 			phone_match = pattern6.match(line_components[3])
-			# print ("TYPE " + type(name_match).__name__)
 
 			success = encapsulate(None, None, name_match, color_match, zip_match, phone_match)
 
 			# If match is found, then capture match and split into first and last name.
 			if success:
-				print ("SUCCESS")
+				# print ("SUCCESS")
+				lastname = success[2]
+				firstname = success[1]
+				color = success[0]
+				phone = success[3]
+				zipcode = success[4]
+				dictionary[lastname + firstname] = collections.OrderedDict([('color', color), ('firstname', firstname), \
+					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
+
+				# dictionary[success[2] + success[1]] = collections.OrderedDict([('color', success[0]), ('firstname', success[1]), \
+				# 	('lastname', success[2]), ('phonenumber', success[3]), ('zipcode', success[4])])
+				# dictionary[last_name + first_name] = {'color': color, 'firstname': first_name, 'lastname': last_name, \
+				# 	'phonenumber': phone, 'zipcode': zipcode}
+
 			else:
-				print ("FAILURE")
-				error_list.append(str(linecount))
+				# print ("FAILURE")
+				error_list.append(linecount)
 
 		elif len(line_components) == 5:
 			# Check format numbers 1, 3.
-			print ("5 COMPONENTS")
+			# print ("5 COMPONENTS")
 			last_name_match1 = pattern2.match(line_components[0])
 			first_name_match1 = pattern1.match(line_components[1])
 			color_match1 = pattern3.match(line_components[3])
@@ -100,24 +115,43 @@ def normalize():
 			success2 = encapsulate(first_name_match2, last_name_match2, None, color_match2, zip_match2, phone_match2);
 
 			if success1:
-				print ("SUCCESS")
+				# print ("SUCCESS")
+				lastname = success1[2]
+				firstname = success1[1]
+				color = success1[0]
+				phone = success1[3]
+				zipcode = success1[4]
+				dictionary[lastname + firstname] = collections.OrderedDict([('color', color), ('firstname', firstname), \
+					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
+
 			elif success2:
-				print ("SUCCESS")
+				# print ("SUCCESS")
+				lastname = success2[2]
+				firstname = success2[1]
+				color = success2[0]
+				phone = success2[3]
+				zipcode = success2[4]
+				dictionary[lastname + firstname] = collections.OrderedDict([('color', color), ('firstname', firstname), \
+					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
+
 			else:
-				print ("FAILURE")
-				error_list.append(str(linecount))
+				# print ("FAILURE")
+				error_list.append(linecount)
 
 		else:
 			# Add to line to error array (number of arguments do not match).
-			error_list.append(str(linecount))
+			error_list.append(linecount)
 
 		linecount += 1
 	
-	print ("FAIL " + ', '.join(error_list))
+	# Sort entries alphabetically and display in JSON object.
+	for key in sorted(dictionary):
+		entries_list.append(dictionary[key])
 
-	# pattern = 
+	print json.dumps(entries_list)
+	print json.dumps(error_list)
 
 	# Test would be to try names that are not in English (tilda n)
 	# UNICODE PROPERTIES ARE NOT SUPPORTED IN PYTHON WITHOUT USE OF EXTERNAL LIBRARIES.
 	
-	return 0
+	return
