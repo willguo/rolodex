@@ -35,7 +35,7 @@ def encapsulate(first_name_match, last_name_match, name_match, color_match, zip_
 
 def normalize():
 	# Open up the file to be read.
-	datafile = open('practice.in', 'r')
+	datafile = open('data.in', 'r')
 
 	# Dictionary to keep track of parsed data.
 	dictionary = {}
@@ -44,7 +44,7 @@ def normalize():
 	# Error list to keep track of errors found in the input data.
 	error_list = []
 
-	# Patterns to match with.
+	# PATTERNS
 	# Pattern to be used for first name and full name matches.
 	pattern1 = re.compile("(?P<elem>^[a-zA-Z'\. ]+$)")
 	# Pattern to be used with last name matches.
@@ -66,7 +66,6 @@ def normalize():
 		line_components = line.split(", ")
 		if len(line_components) == 4:
 			# Check format number 2.
-			# print ("4 COMPONENTS")
 			name_match = pattern1.match(line_components[0])
 			color_match = pattern3.match(line_components[1])
 			zip_match = pattern4.match(line_components[2])
@@ -76,7 +75,6 @@ def normalize():
 
 			# If match is found, then capture match and split into first and last name.
 			if success:
-				# print ("SUCCESS")
 				lastname = success[2]
 				firstname = success[1]
 				color = success[0]
@@ -91,12 +89,10 @@ def normalize():
 				# 	'phonenumber': phone, 'zipcode': zipcode}
 
 			else:
-				# print ("FAILURE")
 				error_list.append(linecount)
 
 		elif len(line_components) == 5:
 			# Check format numbers 1, 3.
-			# print ("5 COMPONENTS")
 			last_name_match1 = pattern2.match(line_components[0])
 			first_name_match1 = pattern1.match(line_components[1])
 			color_match1 = pattern3.match(line_components[3])
@@ -115,7 +111,6 @@ def normalize():
 			success2 = encapsulate(first_name_match2, last_name_match2, None, color_match2, zip_match2, phone_match2);
 
 			if success1:
-				# print ("SUCCESS")
 				lastname = success1[2]
 				firstname = success1[1]
 				color = success1[0]
@@ -125,7 +120,6 @@ def normalize():
 					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
 
 			elif success2:
-				# print ("SUCCESS")
 				lastname = success2[2]
 				firstname = success2[1]
 				color = success2[0]
@@ -135,7 +129,6 @@ def normalize():
 					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
 
 			else:
-				# print ("FAILURE")
 				error_list.append(linecount)
 
 		else:
@@ -148,10 +141,15 @@ def normalize():
 	for key in sorted(dictionary):
 		entries_list.append(dictionary[key])
 
-	print json.dumps(entries_list)
-	print json.dumps(error_list)
+	# response = {'entries': entries_list, 'errors': error_list}
+	response = collections.OrderedDict([('entries', entries_list), ('errors', error_list)])
+	
+	with open('result.out', 'w') as outfile:
+		json.dump(response, outfile, indent = 2)
 
-	# Test would be to try names that are not in English (tilda n)
+	# print json.dumps(entries_list)
+	# print json.dumps(error_list)
+
 	# UNICODE PROPERTIES ARE NOT SUPPORTED IN PYTHON WITHOUT USE OF EXTERNAL LIBRARIES.
 	
 	return
