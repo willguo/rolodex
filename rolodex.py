@@ -43,10 +43,13 @@ def normalize(input_file):
 	error_list = []
 
 	# PATTERNS
+	# Limitation: UNICODE not currently supported by this pattern list as the sorting becomes less intuitive.
+	# An alternative would be to install PyICU (IBM's ICU Library), to help collate unicode algorithmically.
+
 	# Pattern to be used for first name and full name matches.
-	pattern1 = re.compile("(?P<elem>^[a-zA-Z'\. ]+$)")
+	pattern1 = re.compile("(?P<elem>^[a-zA-Z-'\. ]+$)")
 	# Pattern to be used with last name matches.
-	pattern2 = re.compile("(?P<elem>^[a-zA-Z']+$)")
+	pattern2 = re.compile("(?P<elem>^[a-zA-Z-']+$)")
 	# Pattern to be used with color matches.
 	pattern3 = re.compile("(?P<elem>^[a-zA-Z ]+$)")
 	# Pattern to be used for matching zip codes.
@@ -78,7 +81,14 @@ def normalize(input_file):
 				color = success[0]
 				phone = success[3]
 				zipcode = success[4]
-				dictionary[lastname + firstname] = collections.OrderedDict([('color', color), ('firstname', firstname), \
+				# Dictionary entry is to be sorted by (lastname, firstname). Phone number is added
+				# as part of the key as well to prevent duplicate entries by the same person.
+				if dictionary.get(lastname + firstname + " " + phone.replace("-", "")):
+					error_list.append(linecount)
+					linecount += 1
+					continue
+				dictionary[lastname + firstname + " " + phone.replace("-", "")] = \
+					collections.OrderedDict([('color', color), ('firstname', firstname), \
 					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
 
 			else:
@@ -98,29 +108,32 @@ def normalize(input_file):
 			zip_match2 = pattern4.match(line_components[2])
 			phone_match2 = pattern6.match(line_components[3])
 			
+			success = None
+
 			# Check format number 1.
 			success1 = encapsulate(first_name_match1, last_name_match1, None, color_match1, zip_match1, phone_match1);
 			# Check format number 3.
 			success2 = encapsulate(first_name_match2, last_name_match2, None, color_match2, zip_match2, phone_match2);
 
+			# Attempt to "DRY" out code to avoid repetition.
 			if success1:
-				lastname = success1[2]
-				firstname = success1[1]
-				color = success1[0]
-				phone = success1[3]
-				zipcode = success1[4]
-				dictionary[lastname + firstname] = collections.OrderedDict([('color', color), ('firstname', firstname), \
-					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
-
+				success = success1
 			elif success2:
-				lastname = success2[2]
-				firstname = success2[1]
-				color = success2[0]
-				phone = success2[3]
-				zipcode = success2[4]
-				dictionary[lastname + firstname] = collections.OrderedDict([('color', color), ('firstname', firstname), \
-					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
+				success = success2
 
+			if success:
+				lastname = success[2]
+				firstname = success[1]
+				color = success[0]
+				phone = success[3]
+				zipcode = success[4]
+				if dictionary.get(lastname + firstname + " " + phone.replace("-", "")):
+					error_list.append(linecount)
+					linecount += 1
+					continue
+				dictionary[lastname + firstname + " " + phone.replace("-", "")] = \
+					collections.OrderedDict([('color', color), ('firstname', firstname), \
+					('lastname', lastname), ('phonenumber', phone), ('zipcode', zipcode)])
 			else:
 				error_list.append(linecount)
 
@@ -141,12 +154,4 @@ def normalize(input_file):
 	with open('result.out', 'w') as outfile:
 		json.dump(response, outfile, sort_keys = True, indent = 2)
 
-	# TO TEST:
-	# - SAME LAST NAME, DIFFERENT FIRST NAMES
-	# - INVALID INPUTS VS VALID INPUTS
-	# - FORMATTING OF OUTPUT IS CORRECT -> diff?
-	# - FORMAT OF ELEMENTS ARE CORRECT: color, firstname, etc...
-	# ASSERT -> JSON to Python List/Dict -> Dict Element.... errors present?
-	# *** UNICODE PROPERTIES ARE NOT SUPPORTED IN PYTHON WITHOUT USE OF EXTERNAL LIBRARIES. ***
-
-	return
+	return None

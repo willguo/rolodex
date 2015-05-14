@@ -1,0 +1,58 @@
+{
+  "entries": [
+    {
+      "color": "black", 
+      "firstname": "Mary-Ann B", 
+      "lastname": "D-vorak", 
+      "phonenumber": "121-234-1231", 
+      "zipcode": "23222"
+    }, 
+    {
+      "color": "black", 
+      "firstname": "Mary-Lee B. S.", 
+      "lastname": "D-vorak", 
+      "phonenumber": "121-234-1231", 
+      "zipcode": "23222"
+    }, 
+    {
+      "color": "black", 
+      "firstname": "MaryAnn B", 
+      "lastname": "D-vorak", 
+      "phonenumber": "121-234-1231", 
+      "zipcode": "23222"
+    }, 
+    {
+      "color": "gray", 
+      "firstname": "J'aime", 
+      "lastname": "Devoi", 
+      "phonenumber": "628-102-3672", 
+      "zipcode": "38410"
+    }, 
+    {
+      "color": "brown", 
+      "firstname": "arthur", 
+      "lastname": "d", 
+      "phonenumber": "666-666-6662", 
+      "zipcode": "12311"
+    }, 
+    {
+      "color": "brown", 
+      "firstname": "arthur", 
+      "lastname": "d", 
+      "phonenumber": "666-666-6666", 
+      "zipcode": "12312"
+    }, 
+    {
+      "color": "random", 
+      "firstname": "arthur z", 
+      "lastname": "d", 
+      "phonenumber": "293-294-2048", 
+      "zipcode": "12302"
+    }
+  ], 
+  "errors": [
+    2, 
+    7, 
+    8
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "entries": [
+    {
+      "color": "black", 
+      "firstname": "Rita", 
+      "lastname": "D'vorak", 
+      "phonenumber": "121-234-1231", 
+      "zipcode": "23222"
+    }, 
+    {
+      "color": "cyan", 
+      "firstname": "Nicholas", 
+      "lastname": "Dueber", 
+      "phonenumber": "666-666-6666", 
+      "zipcode": "94704"
+    }, 
+    {
+      "color": "emerald green", 
+      "firstname": "Rita", 
+      "lastname": "Dvorak", 
+      "phonenumber": "292-383-2729", 
+      "zipcode": "12345"
+    }, 
+    {
+      "color": "gray", 
+      "firstname": "James", 
+      "lastname": "Johnston", 
+      "phonenumber": "628-102-3672", 
+      "zipcode": "38410"
+    }, 
+    {
+      "color": "gray", 
+      "firstname": "James K.", 
+      "lastname": "Johnston", 
+      "phonenumber": "628-102-3672", 
+      "zipcode": "38410"
+    }, 
+    {
+      "color": "gray", 
+      "firstname": "Jamieson", 
+      "lastname": "Johnston", 
+      "phonenumber": "628-102-3672", 
+      "zipcode": "38410"
+    }
+  ], 
+  "errors": [
+    0, 
+    7, 
+    8
+  ]
+}
