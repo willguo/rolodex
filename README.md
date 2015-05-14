@@ -22,7 +22,7 @@ All tests and test output files can be found in the /test directory.
 
 The unit tests can be run in the terminal by the following command: 
 
-$ python rolodex_test.py"
+$ python rolodex_test.py
 
 You may also choose to test your own input manually via the terminal. To do this, simply run the following
 command, where "input.in" specifies the name of your input file:
