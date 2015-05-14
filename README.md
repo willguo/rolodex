@@ -29,4 +29,5 @@ command, where "input.in" specifies the name of your input file:
 
 $ python -c 'from rolodex import *; normalize("input.in")'
 
+It is important to note that the name of the input file should be passed in as a string object.
 The result should be written to the result.out file located in the project directory.
